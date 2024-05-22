@@ -41,7 +41,7 @@ private :
 	void Init()
 	{
 		// 開始シーンに切り替え
-		ChangeScene(SceneType::Game);
+		ChangeScene(m_currentSceneType);
 	}
 
 	// シーン切り替え関数

@@ -70,6 +70,15 @@
     <Filter Include="Library\imgui">
       <UniqueIdentifier>{b17bb8db-9ca3-4b8f-8d13-84bd3e97ab97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Object">
+      <UniqueIdentifier>{7c5fbd50-2d8c-4639-b9ac-6c62e0f377cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Stage">
+      <UniqueIdentifier>{a42472f2-6349-40e6-a505-9e2e5b26bf75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Player">
+      <UniqueIdentifier>{1a7200c9-e84d-4b1d-a6bd-39c6b812a5e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -237,6 +246,12 @@
     <ClInclude Include="..\Library\imgui\ja_glyph_ranges.h">
       <Filter>Library\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Object\Stage\Stage.h">
+      <Filter>Src\Application\Object\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Player\Player.h">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -376,6 +391,12 @@
     </ClCompile>
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp">
       <Filter>Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Stage\Stage.cpp">
+      <Filter>Src\Application\Object\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Player\Player.cpp">
+      <Filter>Src\Application\Object\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
