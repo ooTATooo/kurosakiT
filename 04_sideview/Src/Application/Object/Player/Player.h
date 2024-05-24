@@ -16,4 +16,6 @@ private:
 
 	KdSquarePolygon m_poly;
 	Math::Vector3 m_pos;
+
+	float m_anime = 0;
 };

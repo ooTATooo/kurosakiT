@@ -13,20 +13,17 @@ void GameScene::Event()
 		);
 	}
 
-	// カメラ
-	static float x = 0;
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+	// プレイヤー座標を取得
+	Math::Vector3 playerPos;
+	if (!m_player.expired())
 	{
-		x -= 0.1f;
-	}
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-	{
-		x += 0.1f;
+		playerPos = m_player.lock()->GetPos();
 	}
 
+	// カメラ処理
 	Math::Matrix transMat;
-	transMat = Math::Matrix::CreateTranslation(x, 2, -5);
-	Math::Matrix mat;
+	transMat = Math::Matrix::CreateTranslation(playerPos.x + 3.0f, 1.5f, -5.0f);
+	//Math::Matrix mat;
 	m_camera->SetCameraMatrix(transMat);
 }
 
@@ -49,4 +46,5 @@ void GameScene::Init()
 	// プレイヤー
 	std::shared_ptr<Player> player = std::make_shared<Player>();
 	m_objList.push_back(player);
+	m_player = player;
 }
