@@ -12,6 +12,6 @@ public:
 
 private:
 
-	KdModelData m_model;
+	std::shared_ptr<KdModelData> m_model;
 
 };

@@ -22,7 +22,7 @@ void GameScene::Event()
 
 	// カメラ処理
 	Math::Matrix transMat;
-	transMat = Math::Matrix::CreateTranslation(playerPos.x + 3.0f, 1.5f, -5.0f);
+	transMat = Math::Matrix::CreateTranslation(playerPos.x + 3.0f, playerPos.y + 1.5f, playerPos.z + -5.0f);
 	//Math::Matrix mat;
 	m_camera->SetCameraMatrix(transMat);
 }
@@ -34,7 +34,7 @@ void GameScene::Init()
 
 	// 1ポインタを作成(このポインタ何も入っていない)
 	// まだこの段階で使い物にならない
-	std::shared_ptr<Stage> stage = std::make_shared<Stage>();
+	std::shared_ptr<Stage> stage;
 
 	// 2領域を確保し、アドレスを1に代入
 	// 実体化

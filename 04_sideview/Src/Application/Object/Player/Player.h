@@ -8,6 +8,7 @@ public:
 	~Player()override {}
 
 	void Update()override;
+	void PostUpdate()override;
 	void Init()override;
 	void GenerateDepthMapFromLight()override;
 	void DrawLit()override;
@@ -18,4 +19,6 @@ private:
 	Math::Vector3 m_pos;
 
 	float m_anime = 0;
+
+	float m_gravity = 0;
 };
