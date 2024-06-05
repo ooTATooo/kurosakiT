@@ -1,8 +1,10 @@
 ﻿#include "GameScene.h"
 #include "../SceneManager.h"
 
+#include "../../Object/Back/Back.h"
 #include "../../Object/Stage/Stage.h"
 #include "../../Object/Player/Player.h"
+
 void GameScene::Event()
 {
 	if (GetAsyncKeyState('T') & 0x8000)
@@ -47,4 +49,7 @@ void GameScene::Init()
 	std::shared_ptr<Player> player = std::make_shared<Player>();
 	m_objList.push_back(player);
 	m_player = player;
+
+	std::shared_ptr<Back> back = std::make_shared<Back>();
+	m_objList.push_back(back);
 }

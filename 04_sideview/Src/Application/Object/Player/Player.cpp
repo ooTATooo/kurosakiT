@@ -23,9 +23,6 @@ void Player::Update()
 	m_pos.y -= m_gravity;
 	m_gravity += 0.005f;
 
-	Math::Matrix transMat;
-	transMat = Math::Matrix::CreateTranslation(m_pos);
-	m_mWorld = transMat;
 }
 
 void Player::PostUpdate()
@@ -89,6 +86,66 @@ void Player::PostUpdate()
 		m_pos = hitPos + Math::Vector3(0, -0.1f, 0);
 		m_gravity = 0;
 	}
+
+	//==========================
+	// 球判定
+	//==========================
+
+	// 球判定用の変数を作成
+	KdCollider::SphereInfo sphere;
+	// 球の中心点を設定
+	sphere.m_sphere.Center = m_pos;
+	sphere.m_sphere.Center.y += 0.5f;
+	// 球の半径を設定
+	sphere.m_sphere.Radius = 0.3f;
+	// 当たり判定をしたいタイプを設定
+	sphere.m_type = KdCollider::TypeGround;
+
+	// デバッグ表示
+	Math::Color color = { 1,1,0,1 };
+	m_pDebugWire->AddDebugSphere(sphere.m_sphere.Center, sphere.m_sphere.Radius, color);
+
+	// 球に当たったオブジェクトの情報を格納
+	std::list<KdCollider::CollisionResult> retSphereList;
+
+	// 当たり判定
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		obj->Intersects(sphere, &retSphereList);
+	}
+
+	// 球に当たったオブジェクトを検出
+	maxOverLap = 0;	// はみでたレイの長さ
+	Math::Vector3 hitDir;	// 当たった方向
+	isHit = false;		// 当たっていたらtrue
+	for (auto& ret : retSphereList)
+	{
+		// 球にめりこんで、オーバーした長さが一番長いものを探す
+		if (maxOverLap < ret.m_overlapDistance)
+		{
+			maxOverLap = ret.m_overlapDistance;
+			hitDir = ret.m_hitDir;
+			isHit = true;
+		}
+	}
+
+	if (isHit)
+	{
+		// Y.Z方向への押し返し無効
+		hitDir.y = 0;
+		hitDir.z = 0;
+		// 正規化(長さを１にする)
+		// 方向は絶対長さ１
+		hitDir.Normalize();
+
+		// 地面に当たっている
+		m_pos += hitDir * maxOverLap;
+	}
+
+
+	Math::Matrix transMat;
+	transMat = Math::Matrix::CreateTranslation(m_pos);
+	m_mWorld = transMat;
 }
 
 void Player::Init()
@@ -99,6 +156,9 @@ void Player::Init()
 	m_poly.SetSplit(6, 6);
 	// 原点変更
 	m_poly.SetPivot(KdSquarePolygon::PivotType::Center_Bottom);
+
+	m_pos = { -54,0,0 };
+
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
 
