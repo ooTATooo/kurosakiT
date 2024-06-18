@@ -229,14 +229,14 @@ private:
 
 	KdAmbientController m_ambientController;
 
-	bool m_pixelArtStyle = true;
+	bool m_pixelArtStyle = false;
 
 	//==========================
 	//
 	// パイプラインステート
 	//
 	//==========================
-	 
+
 	//深度ステンシル（奥行情報の使い方・手前にあるものを無視して描画したりできる
 	ID3D11DepthStencilState* m_depthStencilStates[(int)KdDepthStencilState::Max] = {};
 	std::stack<ID3D11DepthStencilState*> m_ds_Undo;

@@ -1,38 +1,38 @@
-﻿#include "Player.h"
+﻿#include "Enemy.h"
 
 #include "../../Scene/SceneManager.h"
 
-void Player::Update()
+void Enemy::Update()
 {
 	// アニメーション
-	int run[4] = { 24,25,24,26 };
-	int atk[3] = { 6,7,8 };
-	//m_poly.SetUVRect(run[(int)m_anime]);
-	m_poly.SetUVRect(32);
+	int walk[4] = { 3,4,3,5 };
+	m_poly.SetUVRect(walk[(int)m_anime]);
 
-	m_anime += 0.1f;
+	m_anime += 0.05f;
 	if (m_anime >= 4)
 	{
 		m_anime = 0;
 	}
 
-	// 移動処理
-	if (GetAsyncKeyState(VK_LEFT) & 0x8000) { m_pos.x -= 0.1f; }
-	if (GetAsyncKeyState(VK_RIGHT) & 0x8000) { m_pos.x += 0.1f; }
+	if (m_goal >= 5)
+	{
+		m_goal = 0;
+		m_dir *= -1;
+	}
+	m_pos.x += m_dir * m_speed;
+	m_goal += m_speed;
 
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000) { m_gravity = -0.1f; }
 	m_pos.y -= m_gravity;
 	m_gravity += 0.005f;
-
 }
 
-void Player::PostUpdate()
+void Enemy::PostUpdate()
 {
 	//==========================
-	// レイ判定
-	//==========================
+// レイ判定
+//==========================
 
-	// レイ判定用に変数を作成
+// レイ判定用に変数を作成
 	KdCollider::RayInfo ray;
 
 	// レイの発射位置(座標)を設定
@@ -143,42 +143,34 @@ void Player::PostUpdate()
 		m_pos += hitDir * maxOverLap;
 	}
 
-
 	Math::Matrix transMat;
 	transMat = Math::Matrix::CreateTranslation(m_pos);
 	m_mWorld = transMat;
 }
 
-void Player::Init()
+void Enemy::Init()
 {
 	m_poly.SetMaterial("Asset/Textures/char.png");
 
 	// 画像分割
 	m_poly.SetSplit(6, 6);
+
 	// 原点変更
 	m_poly.SetPivot(KdSquarePolygon::PivotType::Center_Bottom);
 
-	m_pos = { -54,0,0 };
+	m_pos = { -25,0,0 };
+
+	m_speed = 0.01f;
 
 	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
 }
 
-void Player::GenerateDepthMapFromLight()
+void Enemy::GenerateDepthMapFromLight()
 {
 	KdShaderManager::Instance().m_StandardShader.DrawPolygon(m_poly, m_mWorld);
 }
 
-void Player::DrawLit()
+void Enemy::DrawLit()
 {
-	// ディゾルブ(溶ける)
-	static float d = 0;
-	d += 0.01f;
-	if (d > 1)
-	{
-		d = 0;
-	}
-	KdShaderManager::Instance().m_StandardShader.SetDissolve(d);
-
-
 	KdShaderManager::Instance().m_StandardShader.DrawPolygon(m_poly, m_mWorld);
 }
