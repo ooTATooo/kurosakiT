@@ -1,32 +1,42 @@
 ﻿#include "Tank.h"
 
 #include "../../main.h"
+#include "../Camera/CameraBase.h"
 
 void Tank::Update()
 {
 	if (!m_spModel)return;
+
+	// カメラのY回転行列を取得
+	Math::Matrix camRotYMat;
+	std::shared_ptr<CameraBase> camera = m_wpCamera.lock();
+	if (camera)
+	{
+		camRotYMat = camera->GetRotationYMatrix();
+	}
+
 
 	Math::Vector3 moveVec;	// 向きたい方向(進みたい方向)
 	bool moveFlg = false;	// 状態フラグ(移動中)
 
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
-		moveVec += { 0,0,1 };
+		moveVec += Math::Vector3::TransformNormal({ 0, 0, 1 }, camRotYMat);
 		moveFlg = true;
 	}
 	if (GetAsyncKeyState('S') & 0x8000)
 	{
-		moveVec += { 0,0,-1 };
+		moveVec += Math::Vector3::TransformNormal({ 0, 0, -1 }, camRotYMat);
 		moveFlg = true;
 	}
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
-		moveVec += { -1,0,0 };
+		moveVec += Math::Vector3::TransformNormal({ -1, 0, 0 }, camRotYMat);
 		moveFlg = true;
 	}
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
-		moveVec += { 1,0,0 };
+		moveVec += Math::Vector3::TransformNormal({ 1, 0, 0 }, camRotYMat);
 		moveFlg = true;
 	}
 
@@ -95,14 +105,17 @@ void Tank::Update()
 					m_angle -= 360;
 				}
 			}
-
-			// printf
-			Application::Instance().m_log.AddLog("m_angle=%.2f ang=%.2f\n", m_angle, ang);
-
-			Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
-
-			m_mWorld = rotMat;
 		}
+
+		// printf
+		Application::Instance().m_log.AddLog("m_angle=%.2f ang=%.2f\n", m_angle, ang);
+
+		Math::Matrix rotMat = Math::Matrix::CreateRotationY(DirectX::XMConvertToRadians(m_angle));
+
+		m_pos += moveVec * 0.1f;
+		Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
+
+		m_mWorld = rotMat * transMat;
 	}
 }
 
@@ -110,7 +123,7 @@ void Tank::GenerateDepthMapFromLight()
 {
 	if (!m_spModel)return;
 
-	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_spModel,m_mWorld);
+	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_spModel, m_mWorld);
 }
 
 void Tank::DrawLit()
