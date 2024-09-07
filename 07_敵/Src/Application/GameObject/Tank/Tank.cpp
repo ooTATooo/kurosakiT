@@ -2,6 +2,7 @@
 
 #include "../../main.h"
 #include "../Camera/CameraBase.h"
+#include "../../Scene/SceneManager.h"
 
 void Tank::Update()
 {
@@ -40,8 +41,12 @@ void Tank::Update()
 		moveFlg = true;
 	}
 
+	m_atkFlg = false;
 	if (moveFlg)
 	{
+		// 攻撃中
+		m_atkFlg = true;
+
 		// 移動中
 		// 回転処理
 
@@ -119,6 +124,30 @@ void Tank::Update()
 	}
 }
 
+void Tank::PostUpdate()
+{
+	if (!m_atkFlg) { return; }
+
+	// 当たり判定(スフィア)
+	KdCollider::SphereInfo atkSphere;
+	atkSphere.m_sphere.Center = m_pos;
+	atkSphere.m_sphere.Center.y += 0.5;
+	atkSphere.m_sphere.Radius = 2;
+	atkSphere.m_type = KdCollider::TypeDamage;
+
+	m_pDebugWire->AddDebugSphere(atkSphere.m_sphere.Center, atkSphere.m_sphere.Radius);
+
+	// 全オブジェトとの当たり判定
+	for (auto& obj : SceneManager::Instance().GetObjList())
+	{
+		if (obj->Intersects(atkSphere, nullptr))
+		{
+			// 当たった
+			obj->OnHit();
+		}
+	}
+}
+
 void Tank::GenerateDepthMapFromLight()
 {
 	if (!m_spModel)return;
@@ -140,4 +169,7 @@ void Tank::Init()
 		m_spModel = std::make_shared<KdModelData>();
 		m_spModel->Load("Asset/Models/tank/tank.gltf");
 	}
+
+	m_pDebugWire = std::make_unique<KdDebugWireFrame>();
+
 }

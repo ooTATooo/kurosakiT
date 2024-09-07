@@ -10,6 +10,7 @@ public:
 	~Tank()override {}
 
 	void Update()override;
+	void PostUpdate()override;
 	void GenerateDepthMapFromLight()override;
 	void DrawLit()override;
 
@@ -26,5 +27,7 @@ private:
 	Math::Vector3 m_pos;
 
 	float m_angle = 0;
+
+	bool m_atkFlg = false;
 
 };

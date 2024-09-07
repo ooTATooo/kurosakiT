@@ -7,8 +7,8 @@ void Player::Update()
 	// アニメーション
 	int run[4] = { 24,25,24,26 };
 	int atk[3] = { 6,7,8 };
-	//m_poly.SetUVRect(run[(int)m_anime]);
-	m_poly.SetUVRect(32);
+	m_poly.SetUVRect(run[(int)m_anime]);
+	//m_poly.SetUVRect(32);
 
 	m_anime += 0.1f;
 	if (m_anime >= 4)
