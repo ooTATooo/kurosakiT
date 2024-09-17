@@ -1,0 +1,31 @@
+﻿#include "Ground.h"
+
+void Ground::GenerateDepthMapFromLight()
+{
+	if (!m_spModel)return;
+
+	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_spModel, m_mWorld);
+}
+
+void Ground::DrawLit()
+{
+	if (!m_spModel)return;
+
+	KdShaderManager::Instance().m_StandardShader.DrawModel(*m_spModel, m_mWorld);
+}
+
+void Ground::Init()
+{
+	if (!m_spModel)
+	{
+		m_spModel = std::make_shared<KdModelData>();
+		m_spModel->Load("Asset/Models/Ground_r/Ground_r.gltf");
+
+		Math::Matrix scaleMat = Math::Matrix::CreateScale(100.0f);
+
+		m_mWorld = scaleMat;
+
+		m_pCollider = std::make_unique<KdCollider>();
+		m_pCollider->RegisterCollisionShape("groundCollision", m_spModel, KdCollider::TypeGround);
+	}
+}
