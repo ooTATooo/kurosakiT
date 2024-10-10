@@ -11,6 +11,10 @@ void GameScene::Event()
 
 void GameScene::Init()
 {
+	// 暗くする
+	KdShaderManager::Instance().WorkAmbientController().SetDirLight({ 1,-1,1 }, { 0,0,0 });
+	KdShaderManager::Instance().WorkAmbientController().SetAmbientLight({ 0.1,0.1,0.1,1 });
+
 	std::shared_ptr<TPSCamera> camera = std::make_shared<TPSCamera>();
 	AddObject(camera);
 

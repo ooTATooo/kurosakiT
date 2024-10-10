@@ -88,7 +88,7 @@ private:
 	void WriteFogParams();
 
 	KdAmbientParameter m_parameter;
-
+	
 	// 点光源
 	std::list<PointLight> m_pointLights;
 

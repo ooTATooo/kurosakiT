@@ -147,6 +147,7 @@ void KdAmbientController::SetheightFog(const Math::Vector3& col, float topValue,
 	m_dirtyFogHeight = true;
 }
 
+// 黒崎授業
 void KdAmbientController::SetConeLightEnable(bool _enable)
 {
 	KdShaderManager::Instance().WriteCBConeLightEnable(_enable);
@@ -161,7 +162,6 @@ void KdAmbientController::SetConeLight(const Math::Vector3& _pos, const Math::Ve
 	m_parameter.m_coneLightColor = _color;
 
 	m_dirtyConeLight = true;
-
 }
 
 // ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// ///// /////

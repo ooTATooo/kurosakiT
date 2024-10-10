@@ -15,7 +15,6 @@ void Tank::Update()
 		camRotYMat = camera->GetRotationYMatrix();
 	}
 
-
 	Math::Vector3 moveVec;	// 向きたい方向(進みたい方向)
 	bool moveFlg = false;	// 状態フラグ(移動中)
 
@@ -116,6 +115,15 @@ void Tank::Update()
 		Math::Matrix transMat = Math::Matrix::CreateTranslation(m_pos);
 
 		m_mWorld = rotMat * transMat;
+
+		// 黒崎授業
+		KdShaderManager::Instance().WorkAmbientController().SetConeLight(
+			m_pos + Math::Vector3(0, 1, 0),
+			m_mWorld.Backward(),
+			DirectX::XMConvertToRadians(30),
+			50,
+			{ 3,3,3 }
+		);
 	}
 }
 

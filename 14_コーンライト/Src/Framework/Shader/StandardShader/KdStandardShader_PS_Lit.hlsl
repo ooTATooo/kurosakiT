@@ -31,6 +31,7 @@ float BlinnPhong(float3 lightDir, float3 vCam, float3 normal, float specPower)
 //================================
 float4 main(VSOutput In) : SV_Target0
 {
+	
 	// ディゾルブによる描画スキップ
 	float discardValue = g_dissolveTex.Sample(g_ss, In.UV).r;
 	if (discardValue < g_dissolveValue)
@@ -216,6 +217,56 @@ float4 main(VSOutput In) : SV_Target0
 		}
 	}
 
+	// 黒崎授業
+	// コーンライト
+	{
+		// 光源に向けたベクトル
+		float3 toDir = g_ConeLight.pos - In.wPos;
+		// 長さを調べる
+		float len = length(toDir);
+
+		if(len < g_ConeLight.range)
+		{
+			// コーンライトの距離範囲内
+
+			// 光源に向いたベクトルを方向ベクトルにする(正規化)
+			toDir = normalize(toDir);
+
+			// 光源に向いたベクトルと光源の逆ベクトルで角度を求める
+			float rad = acos(saturate(dot(toDir, -g_ConeLight.dir)));
+
+			// その角度がコーンライトで指定した角度内
+			if(rad < g_ConeLight.angle)
+			{
+				// この中に入ってきたらコーンライト内のピクセル確定
+
+				// 減衰率(横用)
+				float angleIn = g_ConeLight.angle * 0.8;
+				float side = 1.0 - (rad - angleIn) / (g_ConeLight.angle - angleIn);
+				
+				// 減衰率
+				float atte = saturate(1.0 - len / g_ConeLight.range) * side;
+
+				// 拡散
+				float lightDiffuse = dot(normalize(wN), toDir);
+				lightDiffuse = saturate(lightDiffuse); // マイナス値は0にする　0(暗)～1(明)になる
+
+				// ディフューズ減衰
+				lightDiffuse *= atte;
+				outColor += (g_ConeLight.color * lightDiffuse) * baseDiffuse * baseColor.a;
+				//outColor += (g_ConeLight.color) * baseDiffuse * baseColor.a;
+
+				// スペキュラ
+				float spec = BlinnPhong(-toDir, vCam, wN, specPower);
+
+				spec *= atte; // 減衰
+				
+				// 光の色 * 反射光の強さ * 材質の反射色 * 透明率
+				outColor += (g_ConeLight.color * spec) * baseSpecular * baseColor.a;
+			}
+		}
+	}
+	
 	outColor += g_AmbientLight.rgb * baseColor.rgb * baseColor.a;
 	
 	// 自己発光色の適応
